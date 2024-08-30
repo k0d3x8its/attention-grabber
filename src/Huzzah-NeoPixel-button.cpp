@@ -5,8 +5,8 @@
 void handleRoot();                //Handles the root URL request
 void handleToggle();              //Handles the toggle button action
 
-const char* ssid = "SkyNet";            // Replace with your WiFi SSID
-const char* password = "A125-B040-C9271-D009";    // Replace with your WiFi password
+const char* ssid = "WIFI_SSID";            // Replace with your Wi-Fi SSID
+const char* password = "WIFI_PASSWORD";    // Replace with your Wi-Fi
 
 // Static IP Configuration
 IPAddress local_IP(192, 168, 50, 60);       // Set your desired static IP
@@ -26,6 +26,11 @@ bool ledState = false;
 void setup() {
   Serial.begin(115200);
 
+    Serial.print("SSID: ");
+    Serial.println(ssid);
+    Serial.print("Password: ");
+    Serial.println(password);
+
   pixels.begin();         //intialize NeoPixel Featherwing
   pixels.setBrightness(BRIGHTNESS); //set brightness level
   pixels.clear();
@@ -41,8 +46,6 @@ void setup() {
   while (WiFi.status() != WL_CONNECTED) {
     delay(1000);
     Serial.println("Connecting to WiFi...");
-    delay(1000);
-    Serial.println("Attempting to connect...");
   }
 
   Serial.println("Connected to WiFi");
