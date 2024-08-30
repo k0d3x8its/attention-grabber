@@ -1,69 +1,71 @@
-#include <ESP8266WiFi.h>
-#include <ESP8266WebServer.h>
-#include <Adafruit_NeoPixel.h>
+#include <ESP8266WiFi.h>           // Include library for Wi-Fi functionality
+#include <ESP8266WebServer.h>      // Include library for creating a web server
+#include <Adafruit_NeoPixel.h>     // Include library for controlling NeoPixel LEDs
 
-void handleRoot();                //Handles the root URL request
-void handleToggle();              //Handles the toggle button action
+void handleRoot();                // Function prototype to handle root URL requests
+void handleToggle();              // Function prototype to handle toggle button action
 
 const char* ssid = "WIFI_SSID";            // Replace with your Wi-Fi SSID
-const char* password = "WIFI_PASSWORD";    // Replace with your Wi-Fi
+const char* password = "WIFI_PASSWORD";    // Replace with your Wi-Fi password
 
 // Static IP Configuration
-IPAddress local_IP(192, 168, 50, 60);       // Set your desired static IP
-IPAddress gateway(192, 168, 50, 1);          // Set your network's gateway
-IPAddress subnet(255, 255, 255, 0);         // Set your subnet mask
-IPAddress primaryDNS(8, 8, 8, 8);           // Optional: Set your preferred DNS server
-IPAddress secondaryDNS(8, 8, 4, 4);         // Optional: Set a secondary DNS server
+IPAddress local_IP(192, 168, 50, 60);       // Set desired static IP address for the device
+IPAddress gateway(192, 168, 50, 1);          // Set the gateway IP address of the network
+IPAddress subnet(255, 255, 255, 0);         // Set the subnet mask of the network
+IPAddress primaryDNS(8, 8, 8, 8);           // Optional: Set the primary DNS server
+IPAddress secondaryDNS(8, 8, 4, 4);         // Optional: Set the secondary DNS server
 
-#define LED_PIN     15    // NeoPixel FeatherWing is on GPIO15
-#define NUMPIXELS   32     // Number of NeoPixels on the FeatherWing
-#define BRIGHTNESS  10    // Brightness level (0 - 255)
+#define LED_PIN     15    // Pin number where NeoPixel FeatherWing is connected (GPIO15)
+#define NUMPIXELS   32     // Number of NeoPixels in the FeatherWing
+#define BRIGHTNESS  10    // Brightness level for NeoPixels (0 - 255)
 
-Adafruit_NeoPixel pixels(NUMPIXELS, LED_PIN, NEO_GRB + NEO_KHZ800);
-ESP8266WebServer server(80);
-bool ledState = false;
+Adafruit_NeoPixel pixels(NUMPIXELS, LED_PIN, NEO_GRB + NEO_KHZ800); // Initialize NeoPixel strip
+ESP8266WebServer server(80);        // Create a web server instance listening on port 80
+bool ledState = false;              // Variable to keep track of LED state (on/off)
 
 void setup() {
-  Serial.begin(115200);
+  Serial.begin(115200);             // Start serial communication at 115200 baud rate
 
-    Serial.print("SSID: ");
-    Serial.println(ssid);
-    Serial.print("Password: ");
-    Serial.println(password);
+  Serial.print("SSID: ");           // Print SSID to serial monitor
+  Serial.println(ssid);
+  Serial.print("Password: ");       // Print password to serial monitor
+  Serial.println(password);
 
-  pixels.begin();         //intialize NeoPixel Featherwing
-  pixels.setBrightness(BRIGHTNESS); //set brightness level
-  pixels.clear();
-  pixels.show();
+  pixels.begin();                   // Initialize NeoPixel FeatherWing
+  pixels.setBrightness(BRIGHTNESS); // Set brightness level for NeoPixels
+  pixels.clear();                   // Clear all NeoPixels (turn them off)
+  pixels.show();                    // Update NeoPixels to reflect changes
 
-  // Attempt to connect to Wi-Fi with a static IP
+  // Attempt to configure Wi-Fi with a static IP address
   if (!WiFi.config(local_IP, gateway, subnet, primaryDNS, secondaryDNS)) {
-    Serial.println("STA Failed to configure");
+    Serial.println("STA Failed to configure"); // Print error if configuration fails
   }
 
-  WiFi.begin(ssid, password);
+  WiFi.begin(ssid, password);      // Start connecting to Wi-Fi network with given credentials
 
+  // Wait until connected to Wi-Fi
   while (WiFi.status() != WL_CONNECTED) {
-    delay(1000);
-    Serial.println("Connecting to WiFi...");
+    delay(1000);                   // Wait 1 second before retrying
+    Serial.println("Connecting to WiFi..."); // Print connection status
   }
 
-  Serial.println("Connected to WiFi");
-  Serial.print("IP Address: ");
+  Serial.println("Connected to WiFi"); // Print success message when connected
+  Serial.print("IP Address: ");       // Print the assigned IP address
   Serial.println(WiFi.localIP());
 
-  server.on("/", handleRoot);
-  server.on("/toggle", handleToggle);
+  server.on("/", handleRoot);        // Define handler function for root URL
+  server.on("/toggle", handleToggle); // Define handler function for toggle URL
 
-  server.begin();
-  Serial.println("HTTP server started");
+  server.begin();                   // Start the web server
+  Serial.println("HTTP server started"); // Print message indicating the server has started
 }
 
 void loop() {
-  server.handleClient();
+  server.handleClient();            // Handle incoming client requests
 }
 
 void handleRoot() {
+  // Create HTML content for the root URL
   String html = "<html>\
   <head>\
     <style>\
@@ -83,20 +85,20 @@ void handleRoot() {
   </body>\
 </html>";
 
-  server.send(200, "text/html", html);
+  server.send(200, "text/html", html); // Send the HTML content to the client with a 200 OK status
 }
 
 void handleToggle() {
-  ledState = !ledState;
+  ledState = !ledState;              // Toggle the LED state (on/off)
 
-  if (ledState) {
-    pixels.fill(pixels.Color(0, 150, 0)); // Green color
-    pixels.show();
-  } else {
-    pixels.clear();
-    pixels.show();
+  if (ledState) {                   // If LED state is true (on)
+    pixels.fill(pixels.Color(0, 150, 0)); // Set NeoPixels to green color
+    pixels.show();                 // Update NeoPixels to reflect changes
+  } else {                         // If LED state is false (off)
+    pixels.clear();                // Turn off all NeoPixels
+    pixels.show();                 // Update NeoPixels to reflect changes
   }
 
-  server.sendHeader("Location", "/", true);
-  server.send(303);
+  server.sendHeader("Location", "/", true); // Redirect to root URL
+  server.send(303);                        // Send HTTP 303 See Other response
 }
