@@ -8,7 +8,7 @@ This project creates an attention-grabbing notification system using a Feather H
 
 Imagine kids playing video games in one room while parents are in another room and want to get their attention without yelling or leaving their seat. This system provides a convenient solution by using blinking LEDs to signal the kids, making it an effective communication tool in such scenarios.
 
-## Bill of Materials
+## BUIDL of Materials
 
 1. **Feather Huzzah ESP8266**
    - A compact Wi-Fi microcontroller board used to control the NeoPixel LEDs and host the web server for the virtual button.
@@ -25,18 +25,18 @@ Imagine kids playing video games in one room while parents are in another room a
 5. **Power Supply**
    - A suitable power source to power the Feather Huzzah and NeoPixel Featherwing.
 
-## Instruction Manual/Documentation
+## Documentation
 
 ### Hardware Setup
 
 1. **Connect the NeoPixel Featherwing to the Feather Huzzah**:
-   - Use the Featherwing Doubler to stack the NeoPixel Featherwing on top of the Feather Huzzah. Ensure the connections are secure.
+   - Use the Featherwing Doubler to connect the NeoPixel Featherwing to the Feather Huzzah. Ensure the connections are secure.
 
 2. **Wire the Physical Button**:
-   - Connect one terminal of the physical button to a GPIO pin on the Feather Huzzah (for example, GPIO12). Connect the other terminal to the ground (GND).
+   - Connect one terminal of the physical button to a GPIO pin on the Feather Huzzah (for example, GPIO12). Connect the other terminal to the ground (GND). (*coming soon*)
 
 3. **Power the System**:
-   - Connect a suitable power supply to the Feather Huzzah to power both the Feather Huzzah and the NeoPixel Featherwing.
+   - Connect a suitable power supply to the Feather Huzzah to power both the Feather Huzzah and the NeoPixel Featherwing. This can be 5V via USB or 3.3V via the JST connector.
 
 ### Software Setup
 
@@ -54,7 +54,7 @@ Imagine kids playing video games in one room while parents are in another room a
 
 2. **Virtual Button**:
    - Visit the static IP address provided by the Feather Huzzah in a web browser.
-   - Press the "Toggle LED" button on the web interface to make the NeoPixels blink. The LEDs will alternate between on and off, grabbing attention effectively.
+   - Press the "Toggle LED" button on the web interface to make the NeoPixels turn on. The LEDs will stay on until the button is pressed again.
 
 ---
 
